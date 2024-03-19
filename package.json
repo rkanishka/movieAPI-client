@@ -2,10 +2,17 @@
   "name": "movieapi-client",
   "version": "1.0.0",
   "description": "A description of movieAPI-client",
-  
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "kanishka",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@parcel/transformer-sass": "^2.12.0",
+    "process": "^0.11.10"
+  }
 }
