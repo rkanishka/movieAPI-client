@@ -11,6 +11,7 @@ const MainView = () => {
         'Piku Banerjee (Deepika Padukone) is an architect residing in Chittaranjan Park, Delhi with her 70-year-old widower father, Bhashkor (Amitabh Bachchan). Bhashkor is a hypochondriac with chronic constipation, who traces every problem to his bowel movements',
       Genre: 'Comedy',
       Director: 'Shoojit Sircar',
+      
     },
     {
       ID: 2,
