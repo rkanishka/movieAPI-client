@@ -1,36 +1,27 @@
-import React, { useState } from 'react';
-import MovieCard from './MovieCard';
-import MovieView from './MovieView';
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import MovieView from '../movie-view/movie-view';
+import MovieCard from '../movie-card/movie-card';
 
 const MainView = () => {
-  const [movies, setMovies] = useState([
-    {
-      ID: 1,
-      Title: 'Piku',
-      Description:
-        'Piku Banerjee (Deepika Padukone) is an architect residing in Chittaranjan Park, Delhi with her 70-year-old widower father, Bhashkor (Amitabh Bachchan). Bhashkor is a hypochondriac with chronic constipation, who traces every problem to his bowel movements',
-      Genre: 'Comedy',
-      Director: 'Shoojit Sircar',
-    },
-    {
-      ID: 2,
-      Title: '3-Idiots',
-      Description:
-        '3 IDIOTS follows college best friends, Farhan (R. Madhavan) and Raju (Sharman Joshi), who drive down to Shimla in search for Rancho (Aamir Khan), their long-lost buddy. During their journey, they recall the times they shared together, the mischief they got up to, and all that they learned from Rancho',
-      Genre: 'Drama',
-      Director: 'Rajkumar Hirani',
-    },
-    {
-      ID: 3,
-      Title: 'PK',
-      Description:
-        'An alien on Earth loses the only device he can use to communicate with his spaceship. His innocent nature and child-like questions force the country to evaluate the impact of religious views on people',
-      Genre: 'Fantasy',
-      Director: 'Rajkumar Hirani',
-    },
-  ]);
-
+  const [movies, setMovies] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState(null);
+
+  useEffect(() => {
+    fetch('/myAPI/movies')
+      .then((response) => response.json())
+      .then((data) => {
+        const moviesApi = data.map((movie) => ({
+          id: movie.ID,
+          title: movie.Title,
+          description: movie.Description,
+          genre: movie.Genre,
+          director: movie.Director,
+        }));
+        setMovies(moviesApi);
+      })
+      .catch((error) => console.error('Error fetching movies:', error));
+  }, []);
 
   const handleMovieClick = (movie) => {
     setSelectedMovie(movie);
@@ -40,21 +31,39 @@ const MainView = () => {
     setSelectedMovie(null);
   };
 
-  if (movies.length === 0) {
-    return <div>The list is empty!</div>;
+  if (selectedMovie) {
+    let similarMovies = movies.filter(
+      (movie) =>
+        movie.title !== selectedMovie.title &&
+        movie.genre === selectedMovie.genre
+    );
+    return (
+      <>
+        <MovieView movie={selectedMovie} onBackClick={handleBackClick} />
+        <hr />
+        {similarMovies.length > 0 && <h2>Similar movies</h2>}
+        {similarMovies.map((movie) => (
+          <MovieCard
+            key={movie.id}
+            movie={movie}
+            onMovieClick={handleMovieClick}
+          />
+        ))}
+      </>
+    );
   }
 
   return (
     <div>
-      {selectedMovie ? (
-        <MovieView movie={selectedMovie} onBackClick={handleBackClick} />
+      {movies.length === 0 ? (
+        <div>The list is empty!</div>
       ) : (
         <div>
           <h1>Main View</h1>
           <div className="movie-list">
             {movies.map((movie) => (
               <MovieCard
-                key={movie.ID}
+                key={movie.id}
                 movie={movie}
                 onMovieClick={handleMovieClick}
               />
@@ -64,6 +73,19 @@ const MainView = () => {
       )}
     </div>
   );
+};
+
+MainView.propTypes = {
+  movies: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      title: PropTypes.string.isRequired,
+      description: PropTypes.string.isRequired,
+      genre: PropTypes.string.isRequired,
+      director: PropTypes.string.isRequired,
+    })
+  ),
+                
 };
 
 export default MainView;
