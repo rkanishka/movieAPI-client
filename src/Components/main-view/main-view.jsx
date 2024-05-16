@@ -2,13 +2,24 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import MovieView from '../movie-view/movie-view';
 import MovieCard from '../movie-card/movie-card';
+import { LoginView } from "../login-view/login-view";
+import { SignupView } from "../signup-view/signup-view";
 
 const MainView = () => {
+  const storedToken = localStorage.getItem("token");
+  const storedUser = localStorage.getItem("user");
   const [movies, setMovies] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState(null);
+  const [user, setUser] = useState(storedUser ? storedUser : null);
+  const [token, setToken] = useState(storedToken ? storedToken : null);
 
   useEffect(() => {
-    fetch('/myAPI/movies')
+    if (!token) {
+      return;
+  }
+  fetch("https://moviedb-fdeb4b5f0aa4.herokuapp.com/movies", {
+    headers: { Authorization: `Bearer ${token}` }
+})
       .then((response) => response.json())
       .then((data) => {
         const moviesApi = data.map((movie) => ({
@@ -20,8 +31,7 @@ const MainView = () => {
         }));
         setMovies(moviesApi);
       })
-      .catch((error) => console.error('Error fetching movies:', error));
-  }, []);
+    }, [token]);
 
   const handleMovieClick = (movie) => {
     setSelectedMovie(movie);
