@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
 import MovieView from '../movie-view/movie-view';
 import MovieCard from '../movie-card/movie-card';
 import { LoginView } from "../login-view/login-view";
 import { SignupView } from "../signup-view/signup-view";
+import { CarouselView } from "../carousel-view/carousel-view";
+import { Row, Col, Button, Spinner } from "react-bootstrap";
+import { BoxArrowRight } from "react-bootstrap-icons";
 
 const MainView = () => {
   const storedToken = localStorage.getItem("token");
@@ -14,24 +16,23 @@ const MainView = () => {
   const [token, setToken] = useState(storedToken ? storedToken : null);
 
   useEffect(() => {
-    if (!token) {
-      return;
-  }
-  fetch("https://moviedb-fdeb4b5f0aa4.herokuapp.com/movies", {
-    headers: { Authorization: `Bearer ${token}` }
-})
-      .then((response) => response.json())
-      .then((data) => {
-        const moviesApi = data.map((movie) => ({
-          id: movie.ID,
-          title: movie.Title,
-          description: movie.Description,
-          genre: movie.Genre,
-          director: movie.Director,
-        }));
-        setMovies(moviesApi);
+    if (token) {
+      fetch("https://moviedb-fdeb4b5f0aa4.herokuapp.com/movies", {
+        headers: { Authorization: `Bearer ${token}` }
       })
-    }, [token]);
+        .then((response) => response.json())
+        .then((data) => {
+          const moviesApi = data.map((movie) => ({
+            id: movie.ID,
+            title: movie.Title,
+            description: movie.Description,
+            genre: movie.Genre,
+            director: movie.Director,
+          }));
+          setMovies(moviesApi);
+        });
+    }
+  }, [token]);
 
   const handleMovieClick = (movie) => {
     setSelectedMovie(movie);
@@ -64,38 +65,40 @@ const MainView = () => {
   }
 
   return (
-    <div>
-      {movies.length === 0 ? (
-        <div>The list is empty!</div>
+    <Row className="text-light justify-content-md-center">
+      {!user ? (
+        <>
+          <Col md={8}>
+            <h3>Login</h3>
+            <LoginView onLoggedIn={(user, token) => { setUser(user); setToken(token) }} />
+            <h3>account not found?</h3>
+            <SignupView />
+          </Col>
+        </>
       ) : (
-        <div>
-          <h1>Main View</h1>
-          <div className="movie-list">
-            {movies.map((movie) => (
+        <>
+          <Col>
+            <Button variant="outline-light"
+              onClick={() => {
+                setUser(null);
+                setToken(null);
+                localStorage.clear();
+              }}><BoxArrowRight /></Button>
+          </Col>
+          <CarouselView movies={movies} />
+          {movies.map((movie) => (
+            <Col className="mb-3 mt-3" key={movie.id} md={3}>
               <MovieCard
-                key={movie.id}
                 movie={movie}
-                onMovieClick={handleMovieClick}
-              />
-            ))}
-          </div>
-        </div>
+                onMovieClick={(newSelectedMovie) => {
+                  setSelectedMovie(movie);
+                }} />
+            </Col>
+          ))}
+        </>
       )}
-    </div>
+    </Row>
   );
-};
-
-MainView.propTypes = {
-  movies: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      title: PropTypes.string.isRequired,
-      description: PropTypes.string.isRequired,
-      genre: PropTypes.string.isRequired,
-      director: PropTypes.string.isRequired,
-    })
-  ),
-                
 };
 
 export default MainView;

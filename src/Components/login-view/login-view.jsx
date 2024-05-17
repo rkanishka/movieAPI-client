@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Form, Button, Container, Row, Col } from "react-bootstrap";
 
 export const LoginView = ({ onLoggedIn }) => {
     const [username, setUsername] = useState("");
@@ -36,29 +37,41 @@ export const LoginView = ({ onLoggedIn }) => {
     }
 
     return (
-        <div>
-            <h1>Login</h1>
-            <form onSubmit={handleLogin}>
-                <label>
-                    Username:
-                    <input type="text"
-                        placeholder="username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        minLength={5}
-                        required />
-                </label>
-                <label>
-                    Password:
-                    <input type="password"
-                        placeholder="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        minLength={8}
-                        required />
-                </label>
-                <button type="submit">Submit</button>
-            </form>
-        </div>
+        <Container>
+            <Row className="justify-content-md-center">
+                <Col md={6}>
+                    <h2 className="mb-4">Login</h2>
+                    <Form onSubmit={handleLogin}>
+                        <Form.Group controlId="formUsername" className="mb-3">
+                            <Form.Label>Username:</Form.Label>
+                            <Form.Control
+                                type="text"
+                                placeholder="Enter username"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                minLength={5}
+                                required
+                            />
+                        </Form.Group>
+
+                        <Form.Group controlId="formPassword" className="mb-3">
+                            <Form.Label>Password:</Form.Label>
+                            <Form.Control
+                                type="password"
+                                placeholder="Enter password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                minLength={8}
+                                required
+                            />
+                        </Form.Group>
+
+                        <Button variant="primary" type="submit">
+                            Submit
+                        </Button>
+                    </Form>
+                </Col>
+            </Row>
+        </Container>
     )
 }
