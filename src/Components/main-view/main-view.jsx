@@ -8,7 +8,7 @@ import { CarouselView } from "../carousel-view/carousel-view";
 import { Row, Col, Button } from "react-bootstrap";
 import { BoxArrowRight } from "react-bootstrap-icons";
 import NavBar from "./Components/NavBar";
-import ProfileView from "./profileView"; 
+import ProfileView from "../profile-view/profile-view";
 const MainView = () => {
   const storedToken = localStorage.getItem("token");
   const storedUser = localStorage.getItem("user");
