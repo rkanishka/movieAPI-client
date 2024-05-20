@@ -1,34 +1,53 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import "./movie-view.scss";
+import React from "react";
+import { Col, Row, Figure } from "react-bootstrap";
+import { useParams, Link } from "react-router-dom";
 
-const MovieView = ({ movie, onBackClick }) => {
-  return (
-    <div>
-      <img src={movie.imagePath} alt={movie.title} />
-      <h2>{movie.title}</h2>
-      <p>{movie.description}</p>
-      <p>Year: {movie.year}</p>
-      <p>Genre: {movie.genre.name}</p>
-      <p>Director: {movie.director}</p>
-      <p>Actors: {movie.actors.join(', ')}</p>
-      <button onClick={onBackClick}>Back</button>
-    </div>
-  );
-};
+export const MovieView = ({ movies }) => {
+    const { movieId } = useParams();
+    const movie = movies.find((m) => m.id === movieId);
 
-MovieView.propTypes = {
-  movie: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired,
-    imagePath: PropTypes.string.isRequired,
-    year: PropTypes.number.isRequired,
-    genre: PropTypes.shape({
-      name: PropTypes.string.isRequired,
-    }).isRequired,
-    director: PropTypes.string.isRequired,
-    actors: PropTypes.arrayOf(PropTypes.string).isRequired,
-  }).isRequired,
-  onBackClick: PropTypes.func.isRequired,
+    if (!movie) {
+        return <div>Movie not found</div>;
+    }
+
+    return (
+        <div className="movie-view">
+            <Link to="/movies">
+                <button className="btn btn-outline-light">Back</button>
+            </Link>
+
+            <Row className="justify-content-md-center">
+                <Col xs={6} md={11}>
+                    <h2>{movie.title}</h2>
+                    <span>Genre: {movie.genre}</span>
+                    <p>Description: {movie.description}</p>
+                </Col>
+                <Col md={1}>
+                    <h5>Director</h5>
+                    <Figure className="figure-director">
+                        {movie.director && (
+                            <>
+                                <Figure.Image
+                                    title={movie.director}
+                                    className="rounded"
+                                    width={50}
+                                    height={50}
+                                    alt="director image"
+                                />
+                                <Figure.Caption className="text-light text-center">
+                                    {movie.director.split(" ").map((word, index) => (
+                                        <React.Fragment key={index}>
+                                            {word}
+                                            <br />
+                                        </React.Fragment>
+                                    ))}
+                                </Figure.Caption>
+                            </>
+                        )}
+                    </Figure>
+                </Col>
+            </Row>
+        </div>
+    );
 };
-export default MovieView;
