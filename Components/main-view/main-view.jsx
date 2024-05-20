@@ -7,7 +7,7 @@ import { SignupView } from "../signup-view/signup-view";
 import { CarouselView } from "../carousel-view/carousel-view";
 import { Row, Col, Button } from "react-bootstrap";
 import { BoxArrowRight } from "react-bootstrap-icons";
-import NavBar from "./NavBar";
+import NavBar from "./Components/NavBar";
 import ProfileView from "./ProfileView:"; 
 const MainView = () => {
   const storedToken = localStorage.getItem("token");
