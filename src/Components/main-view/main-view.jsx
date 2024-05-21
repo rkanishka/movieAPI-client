@@ -8,7 +8,8 @@ import { CarouselView } from "../carousel-view/carousel-view";
 import { Row, Col, Button } from "react-bootstrap";
 import { BoxArrowRight } from "react-bootstrap-icons";
 import NavBar from "./Components/NavBar";
-import { ProfileView } from "../profile-view/profile-view";
+import ProfileView from "../profile-view/profile-view";
+
 const MainView = () => {
   const storedToken = localStorage.getItem("token");
   const storedUser = localStorage.getItem("user");
@@ -41,15 +42,12 @@ const MainView = () => {
     localStorage.clear();
   };
   const handleUpdateUser = (updatedUser) => {
-    
     console.log('Update user:', updatedUser);
   };
 
   const handleDeregister = () => {
-   
     console.log('Deregister user');
   };
-
 
   return (
     <Router>
@@ -122,4 +120,5 @@ const MainView = () => {
   );
 };
 
-export default MainView;
+export default MainView
+
